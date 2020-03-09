@@ -354,3 +354,153 @@ document.body.appendChild(img);
 ```html
 <div class="logo"></div>
 ```
+
+## 分离CSS
+因为CSS的下载和JS可以并行,当一个HTML文件很大的时候，我们可以把CSS单独提取出来加载
+
+- mini-css-extract-plugin
+- filename 打包入口文件
+- chunkFilename 用来打包import('module')方法中引入的模块
+
+### 安装依赖模块
+```bash
+npm install --save-dev mini-css-extract-plugin
+```
+
+###  配置webpack.config.js
+替换 style-loader 为 MiniCssExtractPlugin.loader
+```js
+plugins: [
+       //参数类似于webpackOptions.output
++        new MiniCssExtractPlugin({
++            filename: '[name].css',
++            chunkFilename:'[id].css'
++        }),
+
+{
+                test: /\.css/,
+                include: path.resolve(__dirname,'src'),
+                exclude: /node_modules/,
+                use: [{
++                    loader: MiniCssExtractPlugin.loader
+                },'css-loader']
+            }
+```
+
+### 压缩JS和CSS
+用terser-webpack-plugin替换掉uglifyjs-webpack-plugin解决uglifyjs不支持es6语法问题
+```bash
+npm  i terser-webpack-plugin optimize-css-assets-webpack-plugin -D
+```
+
+```js
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+module.exports = {
+    mode: 'production',
+    optimization: {
+        minimizer: [
+           /*  new UglifyJsPlugin({
+                cache: true,//启动缓存
+                parallel: true,//启动并行压缩
+                //如果为true的话，可以获得sourcemap
+                sourceMap: true // set to true if you want JS source maps
+            }), */
+            new TerserPlugin({
+                 parallel: true,
+                 cache: true
+            }),
+            //压缩css资源的
+            new OptimizeCSSAssetsPlugin({
+                 assetNameRegExp:/\.css$/g,
+                 //cssnano是PostCSS的CSS优化和分解插件。cssnano采用格式很好的CSS，并通过许多优化，以确保最终的生产环境尽可能小。
+                 cssProcessor:require('cssnano')
+            })
+        ]
+    },
+```
+
+### css和image存放单独目录
+- outputPath 输出路径
+- publicPath 指定的是构建后在html里的路径
+- 如果在CSS文件中引入图片，而图片放在了image目录下，就需要配置图片的publicPath为/images,或者 
+```js
+{
+   loader:MiniCssExtractPlugin.loader,
+      options:{
++        publicPath:'/'
+      }   
+```
+
+```js
+{
+  test:/\.(jpg|jpeg|png|bmp|gif|svg|ttf|woff|woff2|eot)/,
+  use:[
+        {
+          loader:'url-loader',
+          options:{
+              limit: 4096,
++              outputPath: 'images',
++              publicPath:'/images'
+          }
+        }
+     ]
+}
+```
+
+```js
+output: {
+        path: path.resolve(__dirname,'dist'),
+        filename: 'bundle.js',
++        publicPath:'/'
+    },
+{
+  test:/\.(jpg|jpeg|png|bmp|gif|svg|ttf|woff|woff2|eot)/,
+  use:[
+        {
+          loader:'url-loader',
+          options:{
+              limit: 4096,
++              outputPath: 'images',
++              publicPath:'/images'
+          }
+        }
+     ]
+}
+
+plugins: [
+    new MiniCssExtractPlugin({
+-       //filename: '[name].css',
+-       //chunkFilename: '[id].css',
++       chunkFilename: 'css/[id].css',
++       filename: 'css/[name].[hash].[chunkhash].[contenthash].css',//name是代码码chunk的名字
+    }),
+```
+
+## 文件指纹
+- 打包后输出的文件名和后缀
+- hash一般是结合CDN缓存来使用，通过webpack构建之后，生成对应文件名自动带上对应的MD5值。如果文件内容改变的话，那么对应文件哈希值也会改变，对应的HTML引用的URL地址也会改变，触发CDN服务器从源服务器上拉取对应数据，进而更新本地缓存。
+
+### 文件指纹如何生成
+- Hash 是整个项目的hash值，其根据每次编译内容计算得到，每次编译之后都会生成新的hash,即修改任何文件都会导致所有文件的hash发生改变，在一个项目中虽然入口不同，但是hash是相同的，hash无法实现前端静态资源的浏览器长缓存，如果有这个需求应该使用chunkhash
+- chunkhash 采用hash计算的话，每一次构建后生成的哈希值都不一样，即使文件内容压根没有改变。这样子是没办法实现缓存效果，我们需要换另一种哈希值计算方式，即chunkhash,chunkhash和hash不一样，它根据不同的入口文件(Entry)进行依赖文件解析、构建对应的chunk，生成对应的哈希值。我们在生产环境里把一些公共库和程序入口文件区分开，单独打包构建，接着我们采用chunkhash的方式生成哈希值，那么只要我们不改动公共库的代码，就可以保证其哈希值不会受影响
+- contenthash 使用chunkhash存在一个问题，就是当在一个JS文件中引入CSS文件，编译后它们的hash是相同的，而且只要js文件发生改变 ，关联的css文件hash也会改变,这个时候可以使用mini-css-extract-plugin里的contenthash值，保证即使css文件所处的模块里就算其他文件内容改变，只要css文件内容不变，那么不会重复构建
+
+指纹占位符
+
+**占位符名称** | 	**含义**
+:-|:-|:-
+ext | 资源后缀名
+name | 文件名称
+path | 文件的相对路径
+folder | 文件所在的文件夹
+contenthash | 文件的内容hash,默认是md5生成
+hash | 文件内容的hash,默认是md5生成
+emoj | 一个随机的指代文件内容的emoj
+
+## 编译less 和 sass
+### 安装less
+```bash
+npm i less less-loader -D
+npm i node-sass sass-loader -D
+```

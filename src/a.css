@@ -3,4 +3,7 @@
     padding: 10px;
     border-radius: 4px;
     margin: 10px auto;
+    background: url(./logo.png) no-repeat;
+    background-position: 3% 3%;
+    height: 300px;
 }
