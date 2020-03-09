@@ -222,3 +222,135 @@ package.json
 
 #### loader
 加载 CSS 文件，CSS 文件有可能在 node_modules 里，比如 bootstrap 和 antd
+```js
+module: {
+        rules: [
+            {
+                test: /\.css/,
++                loader:['style-loader','css-loader']
+            }
+        ]
+    }
+```
+
+#### use
+```js
+module: {
+        rules: [
+            {
+                test: /\.css/,
++                use:['style-loader','css-loader']
+            }
+        ]
+    },
+```
+
+#### use + loader
+```js
+  module: {
+        rules: [
+            {
+                test: /\.css/,
+                include: path.resolve(__dirname,'src'),
+                exclude: /node_modules/,
+                use: [{
+                    loader: 'style-loader',
+                    options: {
+                        insert:'top'
+                    }
+                },'css-loader']
+            }
+        ]
+    }
+```
+
+## 插件
+- 在 webpack 的构建流程中，plugin 用于处理更多其他的一些构建任务
+- 模块代码转换的工作由 loader 来处理
+- 除此之外的其他任何工作都可以交由 plugin 来完成
+
+### 自动产出html
+- 我们希望自动能产出HTML文件，并在里面引入产出后的资源
+- [chunksSortMode](https://github.com/jaketrent/html-webpack-template/blob/86f285d5c790a6c15263f5cc50fd666d51f974fd/index.html) 还可以控制引入的顺序
+```bash
+npm i html-webpack-plugin -D
+```
+> [html-webpack-plugin](https://www.npmjs.com/package/html-webpack-plugin) 所有的插件几乎都是一个类
+- minify 是对html文件进行压缩，removeAttrubuteQuotes是去掉属性的双引号
+- hash 引入产出资源的时候加上查询参数，值为哈希避免缓存
+- template 模版路径
+- filename 产出后的文件
+```js
++    +entry:{
++        index:'./src/index.js',  // chunk名字 index
++        common:'./src/common.js' //chunk名字 common
++    },
+
+    plugins: [
++       new HtmlWebpackPlugin({
++            template:'./src/index.html',//指定模板文件
++            filename:'index.html',//产出后的文件名
++            inject:false,
++            hash:true,//为了避免缓存，可以在产出的资源后面添加hash值
++            chunks:['common','index'],
++            chunksSortMode:'manual'//对引入代码块进行排序的模式
++        }),
+    )]
+```
+
+```bash
+<head>
++ <% for (var css in htmlWebpackPlugin.files.css) { %>
++        <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
++ <% } %>
+</head>
+<body>
++ <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
++ <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
++ <% } %>
+</body>
+```
+
+## 支持图片
+### 手动添加图片
+```bash
+npm i file-loader url-loader -D
+```
+[file-loader](https://npmjs.com/package/file-loader) 解决CSS等文件中的引入图片路径问题
+[url-loader](https://www.npmjs.com/package/url-loader) 当图片小于limit的时候会把图片BASE64编码，大于limit参数的时候还是使用file-loader 进行拷贝
+
+### JS中引入图片
+#### JS
+```js
+let logo=require('./images/logo.png');
+let img=new Image();
+img.src=logo;
+document.body.appendChild(img);
+```
+#### webpack.config.js
+```js
+{
+  test:/\.(jpg|png|bmp|gif|svg)/,
+    use:[
+    {
+       loader:'url-loader',
+       options:{limit:4096}
+    }
+  ]
+}
+```
+#### 在 CSS 中引入图片
+还可以在CSS文件中引入图片
+##### CSS
+```css
+.logo{
+    width:355px;
+    height:133px;
+    background-image: url(./images/logo.png);
+    background-size: cover;
+}
+```
+##### HTML
+```html
+<div class="logo"></div>
+```

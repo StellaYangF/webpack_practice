@@ -1,12 +1,16 @@
 const path = require('path');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
     context: process.cwd(),
     mode: 'development',
-    entry: './src/index.js',
+    entry: {
+        index: './src/index.js',
+        common: './src/common.js',
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
+        filename: '[name][contentHash].js',
     },
     module: {},
     plugins: [],
@@ -17,4 +21,41 @@ module.exports = {
         compress: true,
         hot: true,
     },
+    module: {
+        rules: [
+           {
+               test: /\.css$/,
+                use: [{
+                    loader: 'style-loader',
+                    options: {
+                        injectType: 'singletonStyleTag',
+                    }
+                }, 'css-loader'],
+            }, {
+                test: /\.(png|jpg|jpeg)$/,
+                use: [
+                    // {
+                    //     loader: 'file-loader'
+                    // },
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 1024,
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: 'index.html',
+            inject: 'body',
+            chunks: ['common', 'index'],
+            chunksSortMode: 'manual',
+            hash: true,
+        }),
+        new CleanWebpackPlugin(),
+    ]
 }
