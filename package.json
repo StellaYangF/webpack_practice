@@ -4,6 +4,8 @@
   "description": "webpack",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
+    "dev": "webpack-dev-server --open",
     "build:dev": "webpack --config ./build/webpack.base.js --env.development",
     "prod": "webpack --config ./build/webpack.base.js --env.production",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,6 +22,7 @@
     "babel-loader": "^8.0.6",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3",
     "webpack-merge": "^4.2.2"
   }
 }
