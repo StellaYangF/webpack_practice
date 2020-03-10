@@ -596,3 +596,57 @@ npm i @babel/plugin-proposal-decorators @babel/plugin-proposal-class-properties 
 ```
 
 ### decorator
+```js
+function readonly(target,key,discriptor) {
+    discriptor.writable=false;
+}
+
+class Person{
+    @readonly PI=3.14;
+}
+let p1=new Person();
+p1.PI=3.15;
+console.log(p1)
+```
+
+jsconfig.json
+Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+
+修复上述问题，装饰器属于提案阶段。
+```json
+{
+    "compilerOptions": {
+        "experimentalDecorators": true
+    }
+}
+```
+
+### webpack.config.js
+```js
+    test: /\.jsx?$/,
+    use: {
+        loader: 'babel-loader',
+        options:{
+         "presets": ["@babel/preset-env"],
+         "plugins": [
+            ["@babel/plugin-proposal-decorators", { "legacy": true }],
+            ["@babel/plugin-proposal-class-properties", { "loose" : true }]
+         ]
+        }
+    },
+    include: path.join(__dirname,'src'),
+    exclude:/node_modules/
+}
+```
+
+.babelrc
+```json
+{
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose" : true }]
+  ]
+}
+```
+> 注意：If you are using `["@babel/plugin-proposal-decorators"]`, make sure it *comes before* `"@babel/plugin-proposal-class-properties"` and `enable loose` mode. 这里顺序不能颠倒，否则报错。
