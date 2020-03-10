@@ -1,4 +1,4 @@
-// import "./index.css";
+import "./index.css";
 
 function readonly(target, property, descriptor) {
     descriptor.writable = false;
@@ -8,4 +8,9 @@ class A {
 }
 
 let a = new A();
-a.PI = 3.15;
+// a.PI = 3.15;
+
+console.log(a);
+
+// @babel/runtime
+let p = new Promise(resolve => resolve());

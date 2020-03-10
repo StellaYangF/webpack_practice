@@ -650,3 +650,43 @@ Experimental support for decorators is a feature that is subject to change in a 
 }
 ```
 > 注意：If you are using `["@babel/plugin-proposal-decorators"]`, make sure it *comes before* `"@babel/plugin-proposal-class-properties"` and `enable loose` mode. 这里顺序不能颠倒，否则报错。
+
+### babel runtime
+- babel 在每个文件都插入了辅助代码，使代码体积过大
+- babel 对一些公共方法使用了非常小的辅助代码，比如 `_extend`
+- 默认情况下会被添加到每一个需要它的文件中。你可以引入 @babel/runtime 作为一个独立模块，来避免重复引入
+- [babel-plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)
+- [babel-plugin-proposal-decorators](https://babeljs.io/docs/en/babel-plugin-proposal-decorators)
+- [babel-plugin-proposal-class-properties](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties)
+- loose 为 true的时候,属性是直接赋值, loose 为 false的时候会使用 `Object.defineProperty`
+- `@babel/preset-env` 中的 useBuiltIns 选项，如果你设置了 usage，babel 编绎的时候就不用整个 polyfills , 只加载你使用 polyfills，这样就可以减少包的大小
+-` @babel/plugin-transform-runtime` 是开发时引入, `@babel/runtime` 是运行时引用
+- plugin-transform-runtime 已经默认包括了 `@babel/polyfill`，因此不用在独立引入
+- corejs 是一个给低版本的浏览器提供接口的库，如 Promise、Map和Set 等
+- 在 babel 中你设置成 false 或者不设置，就是引入的是 corejs 中的库，而且在全局中引入，也就是说侵入了全局的变量
+
+```bash
+npm install --save-dev @babel/plugin-transform-runtime
+npm install --save @babel/runtime @babel/runtime-corejs2
+```
+
+.babelrc
+```json
+{
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose" : true }]
+    [
+         "@babel/plugin-transform-runtime",
+         {
+            "corejs": 2,
+            "helpers": true,
+            "regenerator": true,
+            "useESModules": true
+        }
+    ]
+  ]
+}
+```
+> 注意：`pollyfill` 官方已不再支持，替代解决方案就是使用 `@babel/runtime-corejs`并配置相关的选项。
