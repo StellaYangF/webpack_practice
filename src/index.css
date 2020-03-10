@@ -1,3 +1,11 @@
 #root {
     color: red;
 }
+
+::placeholder {
+    color: blue;
+}
+
+.container {
+    display: flex;
+}
