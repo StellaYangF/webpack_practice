@@ -21,7 +21,8 @@ cd webpack-practice
 npm init -y
 ```
 
-# 快速上手
+
+# 快速上手 （一）
 ## webpack 核心概念
 - Entry：入口，Webpack 执行构建的第一步将从 Entry 开始，可抽象成输入。
 - Module：模块，在 Webpack 里一切皆模块，一个模块对应着一个文件。Webpack 会从配置的 Entry 开始递归找出所有依赖的模块。
@@ -542,6 +543,7 @@ webpack.config.js
     },
 ```
 
+# 快速上手 （二）
 ## 处理CSS3属性前缀
 为了浏览器的兼容性，有时候我们必须加入-webkit,-ms,-o,-moz这些前缀
 - Trident 内核：主要代表为 IE 浏览器, 前缀为 -ms
@@ -582,3 +584,15 @@ webpack.config.js
    exclude:/node_modules/
 }
 ```
+
+## 转义ES6/ES7/JSX
+- Babel其实是一个编译JavaScript的平台,可以把ES6/ES7,React的JSX转义为ES5
+- babel-plugin-proposal-decorators
+
+### 安装依赖包
+```bash
+npm i babel-loader @babel/core @babel/preset-env  @babel/preset-react  -D
+npm i @babel/plugin-proposal-decorators @babel/plugin-proposal-class-properties -D
+```
+
+### decorator
