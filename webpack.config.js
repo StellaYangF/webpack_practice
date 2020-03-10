@@ -27,6 +27,16 @@ module.exports = {
         compress: true,
         hot: true,
     },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                parallel: true,
+                cache: true
+            }),
+            
+        ]
+    },
     module: {
         rules: [
             {
@@ -39,7 +49,7 @@ module.exports = {
                         // options: {
                         //     injectType: 'singletonStyleTag',
                         // }
-                        
+
                         loader: MiniCssExtractPlugin.loader,
                     }, 'css-loader'],
             }, {
@@ -62,7 +72,7 @@ module.exports = {
                     },
                     'css-loader', 'sass-loader'
                 ]
-            },{
+            }, {
                 test: /\.(png|jpg|jpeg)$/,
                 use: [
                     // {
@@ -94,14 +104,10 @@ module.exports = {
             filename: 'css/[name].css',
             chunkFilename: 'css/[id].css',
         }),
-        new TerserPlugin({
-            parallel: true,
-            cache: true
-       }),
-       new OptimizeCSSAssetsPlugin({
-            assetNameRegExp:/\.css$/g,
-            cssProcessor:require('cssnano')
-   })
+        new OptimizeCSSAssetsPlugin({
+            assetNameRegExp: /\.css$/g,
+            cssProcessor: require('cssnano')
+        })
     ]
 }
 

@@ -504,3 +504,81 @@ emoj | 一个随机的指代文件内容的emoj
 npm i less less-loader -D
 npm i node-sass sass-loader -D
 ```
+
+### 编写样式
+less
+```css
+@color:red;
+.less-container{
+    color:@color;
+}
+```
+
+scss
+```css
+$color:green;
+.sass-container{
+    color:$color;
+}
+```
+
+webpack.config.js
+```js
+{
+        test: /\.less/,
+        include: path.resolve(__dirname,'src'),
+        exclude: /node_modules/,
+        use: [{
+            loader: MiniCssExtractPlugin.loader,
+        },'css-loader','less-loader']
+    },
+    {
+        test: /\.scss/,
+        include: path.resolve(__dirname,'src'),
+        exclude: /node_modules/,
+        use: [{
+            loader: MiniCssExtractPlugin.loader,
+        },'css-loader','sass-loader']
+    },
+```
+
+## 处理CSS3属性前缀
+为了浏览器的兼容性，有时候我们必须加入-webkit,-ms,-o,-moz这些前缀
+- Trident 内核：主要代表为 IE 浏览器, 前缀为 -ms
+- Gecko 内核：主要代表为 Firefox, 前缀为 -moz
+- Presto 内核：主要代表为 Opera, 前缀为 -o
+- Webkit 内核：产要代表为 Chrome 和 Safari, 前缀为 -webkit
+
+[caniuse](https://caniuse.com/)
+```bash
+npm i postcss-loader autoprefixer -D
+```
+
+PostCSS 的主要功能只有两个
+- 第一个就是前面提到的把 CSS 解析成 JavaScript 可以操作的 抽象语法树结构(Abstract Syntax Tree，AST)
+- 第二个就是调用插件来处理 AST 并得到结果
+
+[postcss-loader](https://github.com/postcss/postcss-loader)
+index.css
+```css
+::placeholder {
+    color: red;
+}
+```
+
+postcss.config.js
+```js
+module.exports={
+    plugins: [require('autoprefixer')]
+}
+```
+
+webpack.config.js
+```js
+{
+   test:/\.css$/,
+   use:[MiniCssExtractPlugin.loader,'css-loader','postcss-loader'],
+   include:path.join(__dirname,'./src'),
+   exclude:/node_modules/
+}
+```
