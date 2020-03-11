@@ -2,6 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const resolvePath = filePath => path.resolve(__dirname, filePath);
@@ -10,14 +11,30 @@ module.exports = env => {
     return {
         mode: env,
         entry: resolvePath('./src'),
-        watch: true,
-        
+
         // watch
+        watch: true,
         // watchOptions: {
         //     ignored: /node_modules/,
         //     aggregateTimeout: 300,
         //     poll: 1000,
         // },
+
+        // proxy
+        devServer: {
+            before(app) {
+                app.get('/api/users', function(req, res) {
+                    res.json([{ id:1, name: 'Stella' }])
+                })
+            },
+            proxy: {
+                "/api": {
+                    target: 'http://localhost:8080',
+                    pathRewrite: {"^/api": ""},
+                }
+            },
+        },
+
         output: {
             filename: '[name].js',
             path: resolvePath('./dist'),
@@ -86,6 +103,8 @@ module.exports = env => {
 
             // copyright
             new webpack.BannerPlugin('乡聚旅游'),
+
+          
         ],
         externals: {
             lodash: '_',
