@@ -6,5 +6,7 @@
 // require("expose-loader?_!lodash");
 
 import _ from 'lodash';
+console.log(process.env.NODE_ENV);
+
 
 console.log(_.join(['a', 'b', 'c'], '@'));
