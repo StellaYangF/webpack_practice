@@ -24,7 +24,23 @@ module.exports = env => ({
             },
             {
                 test: /\.js$/,
-                use: 'babel-loader',
+                enforce: 'pre',
+                include: [resolvePath('src')],
+                use: [{
+                    loader: 'eslint-loader',
+                    options: {
+                        fix: true
+                    }
+                }, 'babel-loader'],
+            },
+            {
+                test: /\.(woff|ttf|eot|svg|otf)$/,
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10 * 1024,
+                    }
+                }],
             }
         ]
     },

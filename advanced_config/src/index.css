@@ -1,3 +1,8 @@
+@font-face {
+    src: url(./fonts/HabanoST.otf) format('truetype');
+    font-family: "HabanoST";
+}
+
 ::placeholder {
     color: blue;
 }
@@ -9,4 +14,7 @@ div div{
 
 .container {
     display: flex;
+    font-family: "HabanoST";
+    font-size: 100px;
 }
+

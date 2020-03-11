@@ -690,3 +690,66 @@ npm install --save @babel/runtime @babel/runtime-corejs2
 }
 ```
 > 注意：`pollyfill` 官方已不再支持，替代解决方案就是使用 `@babel/runtime-corejs`并配置相关的选项。
+
+### `@babel/runtime` 与 `@babel/polyfill` 区别
+参考 [区别](https://www.arayzou.com/2019/10/15/plugin-transform-runtime%E4%B8%8Epolyfill/)
+
+### ESLint校验代码格式规范
+- [eslint](https://eslint.org/docs/developer-guide/nodejs-api#cliengine)
+- [eslint-loader](https://www.npmjs.com/package/eslint-loader)
+- [configuring](https://eslint.org/docs/user-guide/configuring)
+- [babel-eslint](https://www.npmjs.com/package/babel-eslint)
+- [Rules](https://cloud.tencent.com/developer/chapter/12618)
+- [ESlint 语法检测配置说明](https://segmentfault.com/a/1190000008742240)
+
+#### 标准配置
+- 建议制定团队的 `eslint` 规范
+- 基于 eslint:recommend 配置进行改进
+- 发现代码错误的规则尽可能多的开启
+- 帮助保持团队的代码风格统一而不要限制开发体验
+```bash
+npm install eslint eslint-loader babel-eslint --D
+```
+
+.eslintrc.js
+```js
+module.exports = {
+    root: true,
+    //指定解析器选项
+    parserOptions: {
+        sourceType: 'module',
+        ecmaVersion: 2015
+    },
+    //指定脚本的运行环境
+    env: {
+        browser: true,
+    },
+    // 启用的规则及其各自的错误级别
+    rules: {
+        "indent": ["error", 4],//缩进风格
+        "quotes": ["error", "double"],//引号类型 
+        "semi": ["error", "always"],//关闭语句强制分号结尾
+        "no-console": "error",//禁止使用console
+        "arrow-parens": 0 //箭头函数用小括号括起来
+    }
+}
+```
+
+webpack.config.js
+```js
+module: {
+    //配置加载规则
+    rules: [
+        {
+            test: /\.js$/,
+            loader: 'eslint-loader',
+            enforce: "pre",
+            include: [path.resolve(__dirname, 'src')], // 指定检查的目录
+            options: { fix: true } // 这里的配置项参数将会被传递到 eslint 的 CLIEngine   
+        },
+    ],
+}
+```
+
+#### 继承airbnb
+[eslint-config-airbnb](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb)
