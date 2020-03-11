@@ -1,16 +1,10 @@
-import "./index.css";
+// import _ from 'lodash';
+// import('expose-loader?_!lodash');
 
-function readonly(target, property, descriptor) {
-    descriptor.writable = false;
-}
-class A {
-    @readonly PI = 3.14;
-}
-let b=1;
-let a = new A();
-// a.PI = 3.15;
+// 全局变量
+// import 方法无效
+// require("expose-loader?_!lodash");
 
-console.log(a);
+import _ from 'lodash';
 
-// @babel/runtime
-let p = new Promise(resolve => resolve());
+console.log(_.join(['a', 'b', 'c'], '@'));

@@ -1,6 +1,8 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
+// const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const resolvePath = filePath => path.resolve(__dirname, filePath);
 
@@ -56,5 +58,24 @@ module.exports = env => ({
         }),
         // clean output directory
         new CleanWebpackPlugin(),
+
+        // third-party lib
+        // new webpack.ProvidePlugin({
+        //     _: 'lodash'
+        // }),
+
+        // cdn
+        new HtmlWebpackExternalsPlugin({
+            externals: [
+                {
+                    module: 'lodash',
+                    entry: 'https://cdn.bootcss.com/lodash.js/4.17.15/lodash.js',
+                    global: '_'
+                }
+            ]
+        })
     ],
+    externals: {
+        lodash: '_',
+    }
 });

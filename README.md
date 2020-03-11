@@ -753,3 +753,118 @@ module: {
 
 #### 继承airbnb
 [eslint-config-airbnb](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb)
+
+```bash
+npm i eslint-config-airbnb eslint-loader eslint eslint-plugin-import eslint-plugin-react eslint-plugin-react-hooks and eslint-plugin-jsx-a11y -D
+```
+
+.eslintrc.js
+```js
+module.exports = {
+    "parser":"babel-eslint",
+    "extends":"airbnb",
+    "rules":{
+        "semi":"error",
+        "no-console":"off",
+        "linebreak-style":"off",
+        "eol-last":"off"
+        //"indent":["error",2]
+    },
+    "env":{
+        "browser":true,
+        "node":true
+    }
+}
+```
+
+### 引入字体
+- OTF—— opentype 苹果机与PC机都能很好应用的兼容字体
+- [HabanoST](http://img.zhufengpeixun.cn/HabanoST.otf)
+
+####  配置loader
+```js
+ test:/\.(woff|ttf|eot|svg|otf)$/,
+     use:{
+                    //url内部内置了file-loader
+        loader:'url-loader',
+        options:{//如果要加载的图片大小小于10K的话，就把这张图片转成base64编码内嵌到html网页中去
+       limit:10*1024
+       }
+   }
+ },
+```
+> `url-loader` 是基于 `file-loader` 的，需要同时安装两个 loader。
+
+#### 使用字体
+```css
+@font-face {
+    src: url('./fonts/HabanoST.otf') format('truetype');
+    font-family: 'HabanoST';
+}
+
+.welcome {
+    font-size:100px;
+    font-family: 'HabanoST';
+}
+```
+
+## 如何调试打包后的代码
+- sourcemap是为了解决开发代码与实际运行代码不一致时帮助我们debug到原始开发代码的技术
+- webpack通过配置可以自动给我们source maps文件，map文件是一种对应编译文件和源文件的方法
+- whyeval
+- source-map
+- javascript_source_map算法
+---todos
+
+## 打包第三方类库
+### 直接引入
+```js
+import _ from 'lodash';
+alert(_.join(['a','b','c'],'@'));
+```
+
+### 插件引入
+- webpack配置ProvidePlugin后，在使用时将不再需要import和require进行引入，直接使用即可
+- _ 函数会自动添加到当前模块的上下文，无需显示声明
+```js
++ new webpack.ProvidePlugin({
++     _:'lodash'
++ })
+```
+> 没有全局的$函数，所以导入依赖全局变量的插件依旧会失败
+
+### expose-loader
+- The expose loader adds modules to the global object. This is useful for debugging
+- 不需要任何其他的插件配合，只要将下面的代码添加到所有的loader之前
+```js
+require("expose-loader?libraryName!./file.js");
+```
+
+```js
+{ 
+  test: require.resolve("jquery"), 
+  loader: "expose-loader?jQuery"
+}
+```
+
+```js
+require("expose-loader?$!jquery");
+```
+
+### externals
+如果我们想引用一个库，但是又不想让webpack打包，并且又不影响我们在程序中以CMD、AMD或者window/global全局等方式进行使用，那就可以通过配置externals
+```js
+ const jQuery = require("jquery");
+ import jQuery from 'jquery';
+```
+
+```js
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+```
+
+```js
++ externals: {
++         jquery: 'jQuery'//如果要在浏览器中运行，那么不用添加什么前缀，默认设置就是global
++ },
+module: {
+```
