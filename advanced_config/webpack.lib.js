@@ -6,12 +6,12 @@ const resolvePath = fileName => path.resolve(__dirname, fileName);
 module.exports = {
     mode: 'none',
     entry: {
-       'stellaMath': resolvePath('./calculator/src/index.js'),
-       'stellaMath.min': resolvePath('./calculator/src/index.js'),
+       'flexible-rem': resolvePath('./flexible-rem/lib/index.js'),
+       'flexible-rem.min': resolvePath('./flexible-rem/lib/index.js'),
     },
     output: {
         filename: '[name].js',
-        path: resolvePath('./calculator/dist'),
+        path: resolvePath('./flexible-rem/dist'),
         library: 'stellaMath',
         libraryExport: 'default',
         libraryTarget: 'umd',

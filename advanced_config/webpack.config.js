@@ -51,12 +51,18 @@ module.exports = env => {
                     use: [{
                         // extract css
                         loader: MiniCssExtractPlugin.loader,
-                    }, 'css-loader', 'postcss-loader'],
+                    }, 'css-loader', 'postcss-loader', {
+                        loader: 'px2rem-loader',
+                        options: {
+                            remUnit: 75,
+                            remPrecession: 8,
+                        }
+                    }],
                     include: resolvePath('./src'),
                     exclude: /node_modules/,
                 },
                 {
-                    test: /\.js$/,
+                    test: /\.js(x?)$/,
                     enforce: 'pre',
                     include: [resolvePath('src')],
                     use: [

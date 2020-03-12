@@ -18,3 +18,7 @@ div div{
     font-size: 100px;
 }
 
+#root {
+    width: 375px;
+    border: 1px solid #f9b;
+}
