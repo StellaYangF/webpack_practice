@@ -12,7 +12,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const resolvePath = filePath => path.resolve(__dirname, filePath);
 
 module.exports = env => {
-    return smw.wrap({
+   return  {
         mode: env,
         entry: resolvePath('./src'),
 
@@ -123,7 +123,7 @@ module.exports = env => {
 
             new FriendlyErrorsWebpackPlugin(),
 
-            new BundleAnalyzerPlugin(),
+            // new BundleAnalyzerPlugin(),
         ],
         // externals
         externals: {
@@ -142,5 +142,5 @@ module.exports = env => {
 
         // friendly-errors
         stats: 'minimal',
-    })
+    }
 };

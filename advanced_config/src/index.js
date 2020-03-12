@@ -9,6 +9,10 @@ import "@/index.css";
 import _ from 'lodash';
 // console.log(process.env.NODE_ENV);
 
+// custom-lib
+import calculator from 'caculator';
+console.log('caculator', calculator.add(1,2));
+
 
 console.log(_.join(['a', 'b', 'c'], '@'));
 
