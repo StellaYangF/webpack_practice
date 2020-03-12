@@ -4,6 +4,7 @@
         "@babel/preset-react"
     ],
     "plugins": [
+        ["@babel/plugin-transform-arrow-functions"],
         [
             "@babel/plugin-proposal-decorators",
             {
@@ -19,7 +20,7 @@
         [
             "@babel/plugin-transform-runtime",
             {
-                "corejs": 3,
+                "corejs": 2,
                 "helpers": true,
                 "regenerator": true,
                 "useESModules": true

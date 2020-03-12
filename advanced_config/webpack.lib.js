@@ -2,7 +2,7 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const resolvePath = fileName => path.resolve(__dirname, fileName);
-
+console.log(resolvePath('./flexible-rem/lib'));
 module.exports = {
     mode: 'none',
     entry: {
@@ -22,6 +22,15 @@ module.exports = {
             new TerserPlugin({
                 include: /\.min\.js/,
             }),
+        ]
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js(x?)$/,
+                include: [ resolvePath('./flexible-rem/lib') ],
+                use: ['babel-loader'],
+            }
         ]
     }
 };

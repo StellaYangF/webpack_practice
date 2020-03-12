@@ -13,9 +13,9 @@ const resolvePath = filePath => path.resolve(__dirname, filePath);
 
 module.exports = env => {
    return  {
-        mode: env,
+        mode: "development",
         entry: resolvePath('./src'),
-
+        devtool:'source-map',
         // watch
         // watch: true,
         // watchOptions: {
@@ -51,22 +51,22 @@ module.exports = env => {
                     use: [{
                         // extract css
                         loader: MiniCssExtractPlugin.loader,
-                    }, 'css-loader', 'postcss-loader', 
-                    // {
-                    //     loader: 'px2rem-loader',
-                    //     options: {
-                    //         remUnit: 75,
-                    //         remPrecession: 8,
-                    //     }
-                    // }
-                ],
-                    include: resolvePath('./src'),
+                        }, 'css-loader', 'postcss-loader', 
+                        // {
+                        //     loader: 'px2rem-loader',
+                        //     options: {
+                        //         remUnit: 75,
+                        //         remPrecession: 8,
+                        //     }
+                        // }
+                    ],
+                    // include: resolvePath('./src'),//
                     exclude: /node_modules/,
                 },
                 {
                     test: /\.js(x?)$/,
                     enforce: 'pre',
-                    include: [resolvePath('src')],
+                    // include: [resolvePath('src'), resolvePath()],
                     use: [
                     //     {
                     //     loader: 'eslint-loader',
