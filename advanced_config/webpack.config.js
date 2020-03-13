@@ -46,6 +46,7 @@ module.exports = env => {
         output: {
             filename: '[name].js',
             path: resolvePath('./dist'),
+            chunkFilename: "[id].[name].js"
         },
         module: {
             noParse: /lodash/,
@@ -110,7 +111,10 @@ module.exports = env => {
             // DllPlugin
             new DllReferencePlugin({
                 manifest: require("./dll/react.manifest.json"),
-            })
+            }),
+
+            // scope hoisting
+            new webpack.optimize.ModuleConcatenationPlugin(),
 
             // third-party lib
             // new webpack.ProvidePlugin({
