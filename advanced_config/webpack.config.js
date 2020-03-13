@@ -9,11 +9,15 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const smw = new SpeedMeasureWebpackPlugin();
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const glob = require('glob');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
+const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
+// const
 const resolvePath = filePath => path.resolve(__dirname, filePath);
 
 module.exports = env => {
    return  {
-        mode: "development",
+        mode: env,
         entry: resolvePath('./src'),
         devtool:'source-map',
         // watch
@@ -60,7 +64,7 @@ module.exports = env => {
                         //     }
                         // }
                     ],
-                    // include: resolvePath('./src'),//
+                    // include: resolvePath('./src'),
                     exclude: /node_modules/,
                 },
                 {
@@ -95,10 +99,18 @@ module.exports = env => {
             }),
             // extract css
             new MiniCssExtractPlugin({
-                filename: 'css/[name][contentHash].css',
+                filename: 'css/[name].css',
             }),
+            new PurgecssPlugin({
+                paths: glob.sync(`${resolvePath('src')}/**/*`, { nodir: true }),
+            } ),
             // clean output directory
             new CleanWebpackPlugin(),
+
+            // DllPlugin
+            new DllReferencePlugin({
+                manifest: require("./dll/react.manifest.json"),
+            })
 
             // third-party lib
             // new webpack.ProvidePlugin({
@@ -106,37 +118,40 @@ module.exports = env => {
             // }),
 
             // cdn
-            new HtmlWebpackExternalsPlugin({
-                externals: [
-                    {
-                        module: 'lodash',
-                        entry: 'https://cdn.bootcss.com/lodash.js/4.17.15/lodash.js',
-                        global: '_'
-                    }
-                ]
-            }),
+            // new HtmlWebpackExternalsPlugin({
+            //     externals: [
+            //         {
+            //             module: 'lodash',
+            //             entry: 'https://cdn.bootcss.com/lodash.js/4.17.15/lodash.js',
+            //             global: '_'
+            //         }
+            //     ]
+            // }),
 
             // copyright
-            new webpack.BannerPlugin('乡聚旅游'),
+            // new webpack.BannerPlugin('乡聚旅游'),
 
             // DefinePlugin
-            new webpack.DefinePlugin({
-                PRODUCTION: JSON.stringify(true),
-                VERSION: '1',
-                EXPRESSION: "1+2",
-                COPYRIGHT: {
-                    AUTHOR: JSON.stringify("乡聚旅游"),
-                }
-            }),
+            // new webpack.DefinePlugin({
+            //     PRODUCTION: JSON.stringify(true),
+            //     VERSION: '1',
+            //     EXPRESSION: "1+2",
+            //     COPYRIGHT: {
+            //         AUTHOR: JSON.stringify("乡聚旅游"),
+            //     }
+            // }),
 
-            new FriendlyErrorsWebpackPlugin(),
+            // new FriendlyErrorsWebpackPlugin(),
 
             // new BundleAnalyzerPlugin(),
+
+            // purgecss-webpack-plugin
+            
         ],
         // externals
-        externals: {
-            lodash: '_',
-        },
+        // externals: {
+        //     lodash: '_',
+        // },
 
         // resolve
         resolve: {
@@ -149,6 +164,6 @@ module.exports = env => {
         },
 
         // friendly-errors
-        stats: 'minimal',
+        // stats: 'minimal',
     }
 };

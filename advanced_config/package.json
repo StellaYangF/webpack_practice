@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --env=production",
-    "dev": "webpack --env=development --progress",
+    "dev": "webpack --env=development",
     "serve": "webpack-dev-server --env=development",
     "start": "nodemon app.js",
-    "lib": "webpack --config ./webpack.lib.js"
+    "lib": "webpack --config ./webpack.lib.js",
+    "dll": "webpack --config ./webpack.dll.js --mode development"
   },
   "keywords": [],
   "author": "",
@@ -39,11 +40,13 @@
     "expose-loader": "^0.7.5",
     "file-loader": "^5.1.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
+    "happypack": "^5.0.0-beta.4",
     "html-webpack-externals-plugin": "^3.8.0",
     "html-webpack-plugin": "^3.2.0",
     "lib-flexible": "^0.3.2",
     "mini-css-extract-plugin": "^0.9.0",
     "postcss-loader": "^3.0.0",
+    "purgecss-webpack-plugin": "^2.1.0",
     "px2rem": "^0.5.0",
     "px2rem-loader": "^0.1.9",
     "react": "^16.13.0",
