@@ -1,0 +1,17 @@
+{
+  "name": "loaders",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "loader1": "./bin/www.js"
+  },
+  "keywords": [
+    "customized loaders"
+  ],
+  "author": "Stella",
+  "license": "ISC"
+}
