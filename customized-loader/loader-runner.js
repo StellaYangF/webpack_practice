@@ -12,3 +12,16 @@ const config = {
         resolve('loaders', 'c-loader.js'),
     ]
 };
+
+function runLoaders(options, finalCallback) {
+
+}
+
+runLoaders({
+    resource: "",
+    loader: [],
+    context: {},
+    readResource: fs.readFile.bind(fs),
+}, (error, result) => {
+    console.log(result);
+})
