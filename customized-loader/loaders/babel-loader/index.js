@@ -1,12 +1,16 @@
 const babel = require('@babel/core');
 const loader = function(inputSource) {
-    console.log(this.request);
     const config = {
         presets: [ "@babel/preset-env" ],
+        sourceMaps: true,
+        filename: this.request.split('!')[1].split('/').pop()
     };
     const { code, map, ast } = babel.transform(inputSource, config);
-    console.log(source);
-    return this.async(null, code);
+    return this.callback(null, code, map);
+}
+
+loader.pitch = function() {
+    console.log('babel-loader.pitch');
 }
 
 module.exports = loader;

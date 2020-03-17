@@ -8,6 +8,7 @@ module.exports = mode => ({
         filename: '[name].js',
         path: resolve('dist'),
     },
+    devtool: 'source-map',
     resolveLoader: {
         // alias: {
         //     'babel-loader': resolve('babel-loader'),
@@ -18,7 +19,12 @@ module.exports = mode => ({
         rules: [
             {
                 test: /\.js$/,
-                use: 'babel-loader',
+                use: ['babel-loader', {
+                    loader: 'banner-loader',
+                    options: {
+                        filename: resolve('src', 'test.js'),
+                    }
+                }],
             }
         ]
     }
