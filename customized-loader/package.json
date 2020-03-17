@@ -5,11 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --env=production",
-    "dev": "webpack --env=development",
-    "serve": "webpack-dev-server --env=development",
-    "start": "nodemon app.js",
-    "lib": "webpack --config ./webpack.lib.js",
-    "dll": "webpack --config ./webpack.dll.js --mode development"
+    "dev": "webpack --env=development"
   },
   "keywords": [],
   "author": "",
