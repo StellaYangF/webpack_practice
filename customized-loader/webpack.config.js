@@ -23,7 +23,7 @@ module.exports = mode => ({
                     loader: 'banner-loader',
                     options: {
                         filename: resolve('src', 'test.js'),
-                    }
+                    }, 
                 }],
             }
         ]
